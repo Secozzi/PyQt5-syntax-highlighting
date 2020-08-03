@@ -26,15 +26,19 @@ def format(color, style=''):
 # Syntax styles that can be shared by all languages
 
 STYLES = {
-    'keyword': format([200, 120, 50], 'bold'),
+    'keyword': format([166, 38, 164]),
+    'literals': format([1, 132, 187]),
     'operator': format([150, 150, 150]),
-    'brace': format('darkGray'),
-    'defclass': format([220, 220, 255], 'bold'),
-    'string': format([20, 110, 100]),
-    'string2': format([30, 120, 110]),
-    'comment': format([128, 128, 128]),
+    'brace': format([56, 58, 66]),
+    'deffunc': format([64, 120, 242]),
+    'defclass': format([193, 132, 1]),
+    'string': format([80, 161, 79]),
+    'string2': format([80, 161, 79]),
+    'meta': format([64, 120, 242]),
+    'special_attributes': format([344, 34, 47]),
+    'comment': format([160, 161, 167], 'italic'),
     'self': format([150, 85, 140], 'italic'),
-    'numbers': format([100, 150, 190]),
+    'numbers': format([152, 104, 1]),
 }
 
 
@@ -49,8 +53,11 @@ class PythonHighlighter(QSyntaxHighlighter):
         'del', 'elif', 'else', 'except', 'exec', 'finally',
         'for', 'from', 'global', 'if', 'import', 'in',
         'is', 'lambda', 'not', 'or', 'pass', 'print',
-        'raise', 'return', 'try', 'while', 'yield',
-        'None', 'True', 'False',
+        'raise', 'return', 'try', 'while', 'yield'
+    ]
+
+    literals = [
+        'False', 'True', 'None'
     ]
 
     # Python operators
@@ -64,6 +71,25 @@ class PythonHighlighter(QSyntaxHighlighter):
         '\+=', '-=', '\*=', '/=', '\%=',
         # Bitwise
         '\^', '\|', '\&', '\~', '>>', '<<',
+    ]
+
+    special_attributes = [
+        '__doc__', '__name__', '__qualname__',
+        '__module__', '__defaults__', '__code__',
+        '__globals__', '__dict__', '__closure__',
+        '__annotations__', '__kwdefaults__'
+    ]
+
+    class_dir = [
+        '__class__', '__delattr__', '__dict__',
+        '__dir__', '__doc__', '__eq__',
+        '__format__', '__ge__', '__getattribute__',
+        '__gt__', '__hash__', '__init__',
+        '__init_subclass__', '__le__', '__lt__',
+        '__module__', '__ne__', '__new__',
+        '__reduce__', '__reduce_ex__', '__repr__',
+        '__setattr__', '__sizeof__', '__str__',
+        '__subclasshook__', '__weakref__'
     ]
 
     # Python braces
@@ -85,8 +111,14 @@ class PythonHighlighter(QSyntaxHighlighter):
         # Keyword, operator, and brace rules
         rules += [(r'\b%s\b' % w, 0, STYLES['keyword'])
                   for w in PythonHighlighter.keywords]
+        rules += [(r'\b%s\b' % l, 0, STYLES['literals'])
+                  for l in PythonHighlighter.literals]
         rules += [(r'%s' % o, 0, STYLES['operator'])
                   for o in PythonHighlighter.operators]
+        rules += [(r'%s' % s, 0, STYLES['special_attributes'])
+                  for s in PythonHighlighter.special_attributes]
+        rules += [(r'%s' % c, 0, STYLES['meta'])
+                  for c in PythonHighlighter.class_dir]
         rules += [(r'%s' % b, 0, STYLES['brace'])
                   for b in PythonHighlighter.braces]
 
@@ -101,12 +133,18 @@ class PythonHighlighter(QSyntaxHighlighter):
             (r"'[^'\\]*(\\.[^'\\]*)*'", 0, STYLES['string']),
 
             # 'def' followed by an identifier
-            (r'\bdef\b\s*(\w+)', 1, STYLES['defclass']),
+            (r'\bdef\b\s*(\w+)', 1, STYLES['deffunc']),
             # 'class' followed by an identifier
             (r'\bclass\b\s*(\w+)', 1, STYLES['defclass']),
 
             # From '#' until a newline
             (r'#[^\n]*', 0, STYLES['comment']),
+
+            # From '@' until a newline
+            (r'@[^\n]*', 0, STYLES['meta']),
+
+            # '>>>'
+            (r'>>>', 0, STYLES['meta']),
 
             # Numeric literals
             (r'\b[+-]?[0-9]+[lL]?\b', 0, STYLES['numbers']),
