@@ -92,6 +92,18 @@ class PythonHighlighter(QSyntaxHighlighter):
         '__subclasshook__', '__weakref__'
     ]
 
+    other = [
+        'super', 'append', 'extend',
+        'insert', 'remove', 'pop',
+        'clear', 'index', 'count',
+        'sort', 'reverse'
+    ]
+
+    types = [
+        'bool', 'int', 'float',
+        'str'
+    ]
+
     # Python braces
     braces = [
         '\{', '\}', '\(', '\)', '\[', '\]',
@@ -119,6 +131,10 @@ class PythonHighlighter(QSyntaxHighlighter):
                   for s in PythonHighlighter.special_attributes]
         rules += [(r'%s' % c, 0, STYLES['meta'])
                   for c in PythonHighlighter.class_dir]
+        rules += [(r'%s' % h, 0, STYLES['meta'])
+                  for h in PythonHighlighter.other]
+        rules += [(r'%s' % t, 0, STYLES['meta'])
+                  for t in PythonHighlighter.types]
         rules += [(r'%s' % b, 0, STYLES['brace'])
                   for b in PythonHighlighter.braces]
 
