@@ -12,8 +12,8 @@ highlight = syntax_pars.PythonHighlighter(editor.document())
 editor.show()
 
 # Load paren_highlight into the editor for demo purposes
-text = open("paren_highlight.py", "r")
-editor.setPlainText(text.read())
+#text = open("paren_highlight.py", "r")
+editor.setPlainText("text.read()")
 
 editor.setFixedSize(800, 800)
 app.exec_()

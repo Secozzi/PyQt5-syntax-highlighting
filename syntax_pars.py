@@ -101,7 +101,10 @@ class PythonHighlighter(QSyntaxHighlighter):
 
     types = [
         'bool', 'int', 'float',
-        'str'
+        'complex', 'list', 'tuple',
+        'range', 'str', 'bytes',
+        'bytearray', 'memoryview',
+        'set', 'frozenset', 'dict'
     ]
 
     # Python braces
@@ -125,16 +128,17 @@ class PythonHighlighter(QSyntaxHighlighter):
                   for w in PythonHighlighter.keywords]
         rules += [(r'\b%s\b' % l, 0, STYLES['literals'])
                   for l in PythonHighlighter.literals]
+        rules += [(r'\b%s\b' % h, 0, STYLES['meta'])
+                  for h in PythonHighlighter.other]
+        rules += [(r'\b%s\b' % t, 0, STYLES['meta'])
+                  for t in PythonHighlighter.types]
+
         rules += [(r'%s' % o, 0, STYLES['operator'])
                   for o in PythonHighlighter.operators]
         rules += [(r'%s' % s, 0, STYLES['special_attributes'])
                   for s in PythonHighlighter.special_attributes]
         rules += [(r'%s' % c, 0, STYLES['meta'])
                   for c in PythonHighlighter.class_dir]
-        rules += [(r'%s' % h, 0, STYLES['meta'])
-                  for h in PythonHighlighter.other]
-        rules += [(r'%s' % t, 0, STYLES['meta'])
-                  for t in PythonHighlighter.types]
         rules += [(r'%s' % b, 0, STYLES['brace'])
                   for b in PythonHighlighter.braces]
 
